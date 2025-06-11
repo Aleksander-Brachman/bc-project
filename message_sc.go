@@ -35,7 +35,7 @@ func (s *SmartContract) InitLedger(ctx contractapi.TransactionContextInterface) 
         return err
     }
 
-    err = ctx.GetStub().PutState(asset.ID, assetJSON)
+    err = ctx.GetStub().PutState(fmt.Sprint(asset.ID), assetJSON)
     if err != nil {
         return fmt.Errorf("failed to put to world state. %v", err)
     }
@@ -46,7 +46,7 @@ func (s *SmartContract) InitLedger(ctx contractapi.TransactionContextInterface) 
 
 // AssetExists returns true when asset with given ID exists in world state
 func (s *SmartContract) AssetExists(ctx contractapi.TransactionContextInterface, id int) (bool, error) {
-  assetJSON, err := ctx.GetStub().GetState(id)
+  assetJSON, err := ctx.GetStub().GetState(fmt.Sprint(id))
   if err != nil {
     return false, fmt.Errorf("failed to read from world state: %v", err)
   }
@@ -61,7 +61,7 @@ func (s *SmartContract) CreateAsset(ctx contractapi.TransactionContextInterface,
     return err
   }
   if exists {
-    return fmt.Errorf("the asset %s already exists", id)
+    return fmt.Errorf("the asset %d already exists", id)
   }
 
   asset := Asset{
@@ -75,17 +75,17 @@ func (s *SmartContract) CreateAsset(ctx contractapi.TransactionContextInterface,
     return err
   }
 
-  return ctx.GetStub().PutState(id, assetJSON)
+  return ctx.GetStub().PutState(fmt.Sprint(id), assetJSON)
 }
 
 // ReadAsset returns the asset stored in the world state with given id.
 func (s *SmartContract) ReadAsset(ctx contractapi.TransactionContextInterface, id int) (*Asset, error) {
-  assetJSON, err := ctx.GetStub().GetState(id)
+  assetJSON, err := ctx.GetStub().GetState(fmt.Sprint(id))
   if err != nil {
     return nil, fmt.Errorf("failed to read from world state: %v", err)
   }
   if assetJSON == nil {
-    return nil, fmt.Errorf("the asset %s does not exist", id)
+    return nil, fmt.Errorf("the asset %d does not exist", id)
   }
 
   var asset Asset
@@ -104,7 +104,7 @@ func (s *SmartContract) UpdateAsset(ctx contractapi.TransactionContextInterface,
     return err
   }
   if !exists {
-    return fmt.Errorf("the asset %s does not exist", id)
+    return fmt.Errorf("the asset %d does not exist", id)
   }
 
   // overwriting original asset with new asset
@@ -119,7 +119,7 @@ func (s *SmartContract) UpdateAsset(ctx contractapi.TransactionContextInterface,
     return err
   }
 
-  return ctx.GetStub().PutState(id, assetJSON)
+  return ctx.GetStub().PutState(fmt.Sprint(id), assetJSON)
 }
 
 func main() {
