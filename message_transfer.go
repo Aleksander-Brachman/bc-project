@@ -75,7 +75,7 @@ func main() { // Inicjalizacja połączenia z HF i wykonywanie skryptu
 	// Połączenie z MariaDB
 	db, err := connToMariaDB()
 	if err != nil {
-		fmt.Errorf("Error connecting to database: %v", err)
+		log.Printf("Error connecting to database: %v", err)
 	}
 	defer db.Close()
 
@@ -87,7 +87,7 @@ func main() { // Inicjalizacja połączenia z HF i wykonywanie skryptu
 	for range ticker.C {
 		records, err := fetchRecords(db)
 		if err != nil {
-			fmt.Errorf("Error fetching records: %v", err)
+			log.Printf("Error fetching records: %v", err)
 			continue
 		}
 		if len(records) == 0 { // Jeżeli tablica rekordów SQL jest pusta to skrypt czeka do następnego ticku 
@@ -98,30 +98,30 @@ func main() { // Inicjalizacja połączenia z HF i wykonywanie skryptu
 			fmt.Printf("Record ID: %d, Date: %s", record.ID, record.Date)
 			exists, err := assetExists(contract, record.ID) // Weryfikacja czy dana wiadomość (jej ID) jest już w ledgerze
 			if err != nil {
-				fmt.Errorf("assetExists error: %v", err)
+				log.Printf("assetExists error: %v", err)
 				continue
 			}
 
 			if !exists { // Jeżeli nie, to następuje utworzenie nowego assetu wiadomości z oryginalnym autorem
 				err := createAsset(contract, record)
 				if err != nil {
-					fmt.Errorf("createAsset error: %v", err)
+					log.Printf("createAsset error: %v", err)
 				}
 			} else { // Jeżeli tak, to następuje weryfikacja czy autor aktualizacji wiadomości jest zgodny z zapisem w ledgerze
 				asset, err := readAsset(contract, record.ID)
 				if err != nil {
-					fmt.Errorf("readAsset error: %v", err)
+					log.Printf("readAsset error: %v", err)
 					continue
 				}
 				if asset.Author == record.Author { // Jeżeli autorzy są zgodni to następuje aktualizacja assetu wiadomości o danym ID w ledgerze
 					err := updateAsset(contract, record)
 					if err != nil {
-						fmt.Errorf("updateAsset error: %v", err)
+						log.Printf("updateAsset error: %v", err)
 					}
 				} else { // Jeżeli autorzy są różni to następuje przywrócenie rekordu SQL do stanu sprzed aktualizacji wykorzystując dane z ledgera
 					err := updateDatabase(db, *asset)
 					if err != nil {
-						fmt.Errorf("updateSQL error: %v", err)
+						log.Printf("updateSQL error: %v", err)
 					}
 				}
 			}
