@@ -5,7 +5,7 @@ import mysql.connector
 # ---- DANE DOSTĘPU DO BAZY ----
 DB_HOST = "localhost"
 DB_USER = "root"
-DB_PASS = "123"   # <- tutaj wpisz swoje hasło do root
+DB_PASS = "123"
 DB_NAME = "project_db"
 
 USERS = ["user_1", "user_2", "user_3"]
