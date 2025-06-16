@@ -47,8 +47,8 @@ class AnnouncementApp:
         tk.Label(self.root, text=f"Zalogowano jako: {self.user.get()}", font=("Arial", 12)).pack(pady=5)
 
         # Tabela
-        self.tree = ttk.Treeview(self.root, columns=("id", "author", "date", "msg"), show="headings", height=10)
-        for col in ("id", "author", "date", "msg"):
+        self.tree = ttk.Treeview(self.root, columns=("ID", "Author", "Date", "Message"), show="headings", height=10)
+        for col in ("ID", "Author", "Date", "Message"):
             self.tree.heading(col, text=col)
             self.tree.column(col, minwidth=0, width=120, stretch=True)
         self.tree.pack(pady=5)
@@ -83,6 +83,12 @@ class AnnouncementApp:
         # Wyczysc tabelę
         for i in self.tree.get_children():
             self.tree.delete(i)
+        
+        # Odświeżanie tabeli
+        self.cursor.close()
+        self.cursor = self.conn.cursor(dictionary=True)
+        self.conn.commit()
+
         self.cursor.execute("SELECT * FROM announcement ORDER BY id")
         for row in self.cursor.fetchall():
             self.tree.insert("", "end", values=(row["id"], row["author"], row["date"], row["msg"]))
