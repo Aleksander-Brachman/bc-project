@@ -1,6 +1,7 @@
 # bc-project
 
 **Temat projektu:** Ochrona integralności komunikatów z wykorzystaniem Hyperledger Fabric
+
 **Autorzy projektu:** Aleksander Brachman, Krzysztof Skociński
 
 Celem projektu w ramach przedmiotu "Technologia Blockchain" było utworzenie systemu przechowywania komunikatów (wiadomości), które są zabezpieczane przed nieautoryzowanymi modyfikacjami dzięki integracji systemu z Hyperledger Fabric, gdzie w sieci blockchainowej umieszczane są kopie komunikatów z bazy danych. 
